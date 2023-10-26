@@ -27,10 +27,12 @@ struct BITMAPINFOHEADER {
 };
 #pragma pack()
 
-void turnRight(char* inputBuffer, char* outputBuffer, int width, int height,
+constexpr int M_PI = 3.14;
+
+void turnRight(unsigned char* inputBuffer, unsigned char* outputBuffer, int width, int height,
     int sizeOfPixel) {
 
-    for (int i = 0; i < width; ++i) {
+    for (int i = 0; i < width; ++i) { 
         for (int j = 0; j < height; ++j) {
             const int newIndex = ((width - i - 1) * height + j) * sizeOfPixel;
             const int oldIndex = (j * width + i) * sizeOfPixel;
@@ -42,7 +44,7 @@ void turnRight(char* inputBuffer, char* outputBuffer, int width, int height,
     }
 }
 
-void turnLeft(char* inputBuffer, char* outputBuffer, int width, int height,
+void turnLeft(unsigned char* inputBuffer, unsigned char* outputBuffer, int width, int height,
     int sizeOfPixel) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -56,19 +58,41 @@ void turnLeft(char* inputBuffer, char* outputBuffer, int width, int height,
     }
 }
 
-void applyGaussianFilter(char* inputBuffer, char* outputBuffer, int width,
+void createKernelGauss(double kernel[5][5]) {
+    //double kernel[5][5];
+    // initialising standard deviation to 1.0
+    double sigma = 1.0;
+    double r;
+    double s = 2.0 * sigma * sigma;
+
+    // sum is for normalization
+    double sum = 0.0;
+
+    // generating 5x5 kernel
+    for (int x = -2; x <= 2; x++) {
+        for (int y = -2; y <= 2; y++) {
+            r = sqrt(x * x + y * y);
+            kernel[x + 2][y + 2] = (exp(-(r * r) / s)) / (M_PI * s);
+            sum += kernel[x + 2][y + 2];
+        }
+    }
+
+    // normalising the Kernel
+    for (int i = 0; i < 5; ++i)
+        for (int j = 0; j < 5; ++j)
+            kernel[i][j] /= sum;
+}
+
+void applyGaussianFilter(unsigned char* inputBuffer, unsigned char* outputBuffer, int width,
     int height, int sizeOfPixel) {
     // Gaussian kernel for a 5x5 filter
-    int kernel[5][5] = { {1, 2, 4, 2, 1},
-                        {2, 4, 8, 4, 2},
-                        {4, 8, 16, 8, 4},
-                        {2, 4, 8, 4, 2},
-                        {1, 2, 4, 2, 1} };
+    double kernel[5][5];
+    createKernelGauss(kernel);
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            int totalR = 0, totalG = 0, totalB = 0;
-            int divisor = 0;
+            double totalR = 0, totalG = 0, totalB = 0;
+            double divisor = 0;
 
             for (int ky = -2; ky <= 2; ++ky) {
                 for (int kx = -2; kx <= 2; ++kx) {
@@ -77,10 +101,11 @@ void applyGaussianFilter(char* inputBuffer, char* outputBuffer, int width,
 
                     if (posX >= 0 && posX < width && posY >= 0 && posY < height) {
                         int index = (posY * width + posX) * sizeOfPixel;
-                        totalR += inputBuffer[index] * kernel[ky + 2][kx + 2];
-                        totalG += inputBuffer[index + 1] * kernel[ky + 2][kx + 2];
-                        totalB += inputBuffer[index + 2] * kernel[ky + 2][kx + 2];
-                        divisor += kernel[ky + 2][kx + 2];
+                        const double kernelParam = kernel[ky + 2][kx + 2];
+                        totalR += inputBuffer[index] * kernelParam;
+                        totalG += inputBuffer[index + 1] * kernelParam;
+                        totalB += inputBuffer[index + 2] * kernelParam;
+                        divisor += kernelParam;
                     }
                 }
             }
@@ -98,10 +123,10 @@ void applyGaussianFilter(char* inputBuffer, char* outputBuffer, int width,
 }
 
 void writeBuffer(const char* file, ifstream& is, BITMAPINFOHEADER bmpInfoHeader,
-    char* buffer, int bufferSize, int sizeOfPixel, int shiftToData,
+    unsigned char* buffer, int bufferSize, int sizeOfPixel, int shiftToData,
     bool isHeadChanged = true) {
     ofstream os(file, ofstream::binary);
-    if (!os) {
+    if (!os.is_open()) {
         cerr << "Output file is unvalid" << endl;
         return;
     }
@@ -116,7 +141,7 @@ void writeBuffer(const char* file, ifstream& is, BITMAPINFOHEADER bmpInfoHeader,
     }
 
     os.seekp(shiftToData); // Перемещаем указатель к началу пиксельных данных
-    os.write(buffer, bufferSize *
+    os.write((char*) buffer, bufferSize *
         sizeOfPixel); // Записывает данные размером newBufferSize
     // байт из буфера newBuffer в поток os
     os.close();
@@ -127,7 +152,7 @@ void writeBuffer(const char* file, ifstream& is, BITMAPINFOHEADER bmpInfoHeader,
 int main() {
     ifstream is("Mandrill.bmp", ifstream::binary);
 
-    if (!is) {
+    if (!is.is_open()) {
         cerr << "File can't be opened!"
             << endl; // Выводит сообщение об ошибке в стандартный поток ошибок
         return 1;
@@ -147,33 +172,35 @@ int main() {
     // Читаем пиксели из исходного файла и поворачиваем изображение
     int bufferSize = width * height;
     int sizeOfPixel = bmpInfoHeader.biBitCount / 8; // Длина пикселя в байтах
-    char* buffer = new char[sizeOfPixel * bufferSize];
+    unsigned char* buffer = new unsigned char[sizeOfPixel * bufferSize];
     const int shiftToData = bmpHeader.bfOffBits;
 
     is.seekg(shiftToData); // Перемещаем указатель к началу пиксельных данных (байт 54)
-    is.read(buffer, bufferSize * sizeOfPixel);
+    is.read((char*) buffer, bufferSize * sizeOfPixel);
 
     // Создаем новый буфер для повернутого изображения
     bmpInfoHeader.biWidth = height;
     bmpInfoHeader.biHeight = width;
 
     // write to gauss file -----------------------------
-    char* bufferGauss = new char[sizeOfPixel * bufferSize];
+    unsigned char* bufferGauss = new unsigned char[sizeOfPixel * bufferSize];
     applyGaussianFilter(buffer, bufferGauss, width, height, sizeOfPixel);
     writeBuffer("Gauss.bmp", is, bmpInfoHeader, bufferGauss, bufferSize,
         sizeOfPixel, shiftToData, false);
 
     // write to right file -----------------------------
-    char* rightTransformBuffer = new char[sizeOfPixel * bufferSize];
+    unsigned char* rightTransformBuffer = new unsigned char[sizeOfPixel * bufferSize];
     turnRight(buffer, rightTransformBuffer, width, height, sizeOfPixel);
     writeBuffer("Rotated1.bmp", is, bmpInfoHeader, rightTransformBuffer,
         bufferSize, sizeOfPixel, shiftToData);
 
     // write to left file -----------------------------
-    char* leftTransformBuffer = new char[sizeOfPixel * bufferSize];
+    unsigned char* leftTransformBuffer = new unsigned char[sizeOfPixel * bufferSize];
     turnLeft(buffer, leftTransformBuffer, width, height, sizeOfPixel);
     writeBuffer("Rotated2.bmp", is, bmpInfoHeader, leftTransformBuffer,
         bufferSize, sizeOfPixel, shiftToData);
+
+
 
     is.close();
     delete[] buffer;
