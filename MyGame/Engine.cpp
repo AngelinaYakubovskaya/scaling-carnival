@@ -3,6 +3,7 @@
 #include "Position.hpp"
 
 #include <iostream>
+#include <vector>
 
 namespace my_game
 {
@@ -12,6 +13,7 @@ namespace
 
 size_t gWidthGameField = 100;
 size_t gHeightGameField = 100;
+
 
 } // namespace
 
@@ -29,17 +31,15 @@ void Engine::stop()
 
 void Engine::loop()
 {
-    std::map<Position, bool> mineMap;
-    std::cout << "minemap";
+    std::vector<std::vector<std::size_t>> mineMap(gWidthGameField, std::vector<std::size_t>(gHeightGameField));
     for (int i = 0; i < gWidthGameField; ++i)
     {
         for (int j = 0; j < gHeightGameField; ++j)
         {
             int num = rand() % 2;
             Position pos{i, j, 0};
-            mineMap.insert_or_assign(pos, (bool)num);
-            std::cout << "Position = " << pos << (((bool)num) ? "Mine" : " No mine") << std::endl;
-            
+            mineMap[i][j] =  num;
+            //std::cout << "x = " << i << "y = " << j << ((num == 1) ? ": Mine" : ": No mine") << std::endl;
         }
     }
 
@@ -47,23 +47,25 @@ void Engine::loop()
     {
         std::cout << "------------------------ main loop is working ..." << std::endl;
         auto & characters(mGame->characters());
-        for (int it = characters.size() - 1; it >= 0; --it)
+
+        for (int i = characters.size() - 1; i >= 0; --i)
         {
-            auto character = characters[it];
+            auto character = characters[i];
             character->go({Position{rand() % 100, rand() % 100, 0}});
-
             mDestroyController.check(mineMap, character);
-
-            if (character->isDead())
-            {
-                std::cout << character->name() << " was killed" << std::endl;
-                characters.erase(characters.begin() + it);
-
-            }
+            std::cout << character->name() << (character->isDead() ? " was blown" : " is still alive") << std::endl;
         }
 
-        if (characters.size() == 0)
+        if (mGame->isHeroDead())
+        {
+            std::cout << "Game over!!!" << std::endl;
             mIsStarted = false;
+        }
+
+        characters.erase(std::remove_if(characters.begin(),
+                                        characters.end(),
+                                        [](const std::shared_ptr<BaseCharacter> & c) { return c->isDead(); }),
+                         characters.end());
     }
 }
 

@@ -10,10 +10,10 @@
 namespace my_game
 {
 
-class DestroyController
-{
+class DestroyController {
 public:
-    void check(const std::map<Position, bool> & mineMap, std::shared_ptr<BaseCharacter> character);
+  void check(const std::vector<std::vector<std::size_t>> &mineMap,
+             std::shared_ptr<BaseCharacter> character);
 };
 
 } // namespace my_game

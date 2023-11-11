@@ -20,7 +20,7 @@ inline std::ostream & operator<<(std::ostream & os, const Position & pos)
 
 inline bool operator<(const Position & lhs, const Position & rhs)
 {
-    return std::hypot(lhs.x, lhs.y) < std::hypot(rhs.x, rhs.y);
+    return lhs.x < rhs.x && lhs.y < rhs.y;
 }
 
 inline bool operator==(const Position & lhs, const Position & rhs)

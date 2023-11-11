@@ -6,8 +6,6 @@
 namespace my_game
 {
 
-
-
 std::unique_ptr<Game> MineFieldGameBuilder::buildGame()
 {
     auto game = std::make_unique<MineFieldGame>();

@@ -5,14 +5,11 @@
 namespace my_game
 {
 
-void DestroyController::check(const std::map<Position, bool> & mineMap, std::shared_ptr<BaseCharacter> character)
+void DestroyController::check(const std::vector<std::vector<std::size_t>> & mineMap,
+                              std::shared_ptr<BaseCharacter> character)
 {
-    auto foundPos = mineMap.find(character->getPosition());
-    if (foundPos != mineMap.end())
-    {
-        if (foundPos->second)
-            character->kill();
-    }
+    if (mineMap[character->getPosition().x][character->getPosition().y] == 1)
+        character->kill();
 }
 
 } // namespace my_game

@@ -24,7 +24,18 @@ public:
         return mIsDead;
     }
 
+    inline bool isHero() const
+    {
+        return mIsHero;
+    }
+
+    inline void setHero()
+    {
+        mIsHero = true;
+    }
+
     std::string name() const;
+
 
 protected:
 
@@ -34,7 +45,8 @@ private:
     std::string mName;
     size_t mId;
     Position mPosition;
-    bool mIsDead;
+    bool mIsDead = false;
+    bool mIsHero = false;
 };
 
 } // namespace my_game

@@ -3,6 +3,8 @@
 #include "MineFieldGame.hpp"
 #include "GameBuilder.hpp"
 
+#include <memory>
+
 namespace my_game
 {
 

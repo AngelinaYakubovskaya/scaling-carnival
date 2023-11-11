@@ -11,10 +11,7 @@ class GameBuilder
 {
 public:
     ~GameBuilder() = default;
-    virtual inline std::unique_ptr<Game> buildGame()
-    {
-        return std::make_unique<Game>();
-    }
+    virtual std::unique_ptr<Game> buildGame();
 };
 
 } // namespace my_game

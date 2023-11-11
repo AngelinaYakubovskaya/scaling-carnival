@@ -19,6 +19,23 @@ public:
     void addObject(const std::shared_ptr<Object> obj);
     std::vector<std::shared_ptr<Object>> objects() const;
 
+    inline bool isHeroDead()
+    {
+        if (mCharacters.empty())
+            return true;
+
+        for (const auto & character : mCharacters)
+        {
+            if (character->isHero() && character->isDead())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 
 protected:
     std::vector<std::shared_ptr<BaseCharacter>> mCharacters;
