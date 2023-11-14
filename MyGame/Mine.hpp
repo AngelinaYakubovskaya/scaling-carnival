@@ -5,6 +5,9 @@
 namespace my_game
 {
 
+/** 
+* @brief class Mine defines mine object.
+*/
 class Mine : public Object
 {
 };

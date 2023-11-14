@@ -8,8 +8,8 @@
 namespace my_game
 {
 
-/**
-* @brief class BaseCharacter base class that defines character.
+/** 
+* @brief class BaseCharacter is base class that defines character.
 */
 class BaseCharacter : public ICharacter
 {

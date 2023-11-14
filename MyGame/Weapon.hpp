@@ -5,6 +5,9 @@
 namespace my_game
 {
 
+/** 
+* @brief class Weapon defiles weapon for characters.
+*/
 class Weapon : public Object
 {
 

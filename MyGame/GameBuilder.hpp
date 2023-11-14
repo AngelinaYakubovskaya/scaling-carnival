@@ -7,6 +7,9 @@
 namespace my_game
 {
 
+/** 
+* @brief class GameBuilder is base builder class. There is added characters, objects to game.
+*/
 class GameBuilder
 {
 public:

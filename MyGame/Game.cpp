@@ -23,4 +23,20 @@ std::vector<std::shared_ptr<Object>> Game::objects() const
     return mObjects;
 }
 
+bool Game::isHeroDead() const
+{
+    if (mCharacters.empty())
+        return true;
+
+    for (const auto & character : mCharacters)
+    {
+        if (character->isHero() && character->isDead())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 } // namespace my_game

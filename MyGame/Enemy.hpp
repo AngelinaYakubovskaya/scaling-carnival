@@ -7,6 +7,9 @@ namespace my_game
 
 class Position;
 
+/** 
+* @brief class Enemy defines hero's opponents.
+*/
 class Enemy : public BaseCharacter
 {
 public:

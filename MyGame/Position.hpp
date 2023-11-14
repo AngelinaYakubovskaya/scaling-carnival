@@ -5,6 +5,9 @@
 namespace my_game
 {
 
+/** 
+* @brief struct Position is position in rectangular coordinate system. 'z' isn't used.
+*/
 struct Position
 {
     int x;

@@ -5,6 +5,9 @@ namespace my_game
 
 class Position;
 
+/** 
+* @brief class ICharacter is interface for characters classes.
+*/
 class ICharacter
 {
 public:

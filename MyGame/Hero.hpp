@@ -5,6 +5,9 @@
 namespace my_game
 {
 
+/** 
+* @brief class Hero defines main game's character.
+*/
 class Hero : public BaseCharacter
 {
 public:

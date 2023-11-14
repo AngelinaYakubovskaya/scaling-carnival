@@ -8,15 +8,6 @@
 namespace my_game
 {
 
-namespace
-{
-
-size_t gWidthGameField = 100;
-size_t gHeightGameField = 100;
-
-
-} // namespace
-
 void Engine::start()
 {
     mIsStarted = true;
@@ -31,41 +22,14 @@ void Engine::stop()
 
 void Engine::loop()
 {
-    std::vector<std::vector<std::size_t>> mineMap(gWidthGameField, std::vector<std::size_t>(gHeightGameField));
-    for (int i = 0; i < gWidthGameField; ++i)
-    {
-        for (int j = 0; j < gHeightGameField; ++j)
-        {
-            int num = rand() % 2;
-            Position pos{i, j, 0};
-            mineMap[i][j] =  num;
-            //std::cout << "x = " << i << "y = " << j << ((num == 1) ? ": Mine" : ": No mine") << std::endl;
-        }
-    }
-
     while (mIsStarted)
     {
-        std::cout << "------------------------ main loop is working ..." << std::endl;
-        auto & characters(mGame->characters());
-
-        for (int i = characters.size() - 1; i >= 0; --i)
+        std::cout << " --- main loop is working --- " << std::endl;
+        if (!mGame->play())
         {
-            auto character = characters[i];
-            character->go({Position{rand() % 100, rand() % 100, 0}});
-            mDestroyController.check(mineMap, character);
-            std::cout << character->name() << (character->isDead() ? " was blown" : " is still alive") << std::endl;
-        }
-
-        if (mGame->isHeroDead())
-        {
-            std::cout << "Game over!!!" << std::endl;
             mIsStarted = false;
+            return;
         }
-
-        characters.erase(std::remove_if(characters.begin(),
-                                        characters.end(),
-                                        [](const std::shared_ptr<BaseCharacter> & c) { return c->isDead(); }),
-                         characters.end());
     }
 }
 

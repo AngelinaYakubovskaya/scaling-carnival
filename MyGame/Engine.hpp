@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Game.hpp"
-#include "DestroyController.hpp"
 
 #include <memory>
 
 namespace my_game
 {
 
+/** 
+* @brief class Engine contains game's main loop.
+*/
 class Engine
 {
 public:
@@ -19,7 +21,6 @@ public:
 private:
     bool mIsStarted;
     std::unique_ptr<Game> mGame;
-    DestroyController mDestroyController;
 };
 
 } // namespace my_game

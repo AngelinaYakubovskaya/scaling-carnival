@@ -8,10 +8,14 @@
 namespace my_game
 {
 
+/** 
+* @brief class MineFieldGameBuilder creates game with mine field.
+*/
 class MineFieldGameBuilder : public GameBuilder
 {
 public:
-    ~MineFieldGameBuilder() = default;
+    MineFieldGameBuilder() = default;
+    ~MineFieldGameBuilder();
     std::unique_ptr<Game> buildGame() override;
 };
 
