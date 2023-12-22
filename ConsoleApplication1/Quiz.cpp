@@ -21,10 +21,7 @@
 		{
 			for (int j = 0; j < teams.size(); ++j)
 			{
-				if (teams[j].hasSpecialistByTaskTheme(tasks[i].tasktheme))
-				{
-					teams[j].addNumberOfPoints(1);
-				}
+				teams[j].tryAnswer(tasks[i].tasktheme);
 			}
 		}
 

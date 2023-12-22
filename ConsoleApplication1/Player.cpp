@@ -20,17 +20,32 @@ int Player::getAge() const {
     return age;
 }
 
-void Player::setProfession(std::string PlayerProfession) {
-    profession = PlayerProfession;
-}
-
 
 std::string Player::getProfession() const {
-    return profession;
+    std::string professionString;
+    switch (mProfession)
+    {
+    case Profession::ArtistPro:
+        professionString = "Artist";
+        break;
+
+    case Profession::SientistPro:
+        professionString = "Scientist";
+        break;
+
+    case Profession::SportsmanPro:
+        professionString = "Sportsman";
+        break;
+
+    default:
+        break;
+
+    }
+    return professionString;
 }
 
-
 void Player::printInfo() {
-    std::cout << "Name: " << name << ", Profession: " << profession << ", Age: " << age << std::endl;
+ 
+    std::cout << "Name: " << name << ", Profession: " << getProfession() << ", Age: " << age << std::endl;
 }
 

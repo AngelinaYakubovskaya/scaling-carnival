@@ -4,6 +4,7 @@
 #include <string>
 #include "consts.h"
 
+
 class Player {
 private:
     std::string name;
@@ -12,10 +13,12 @@ private:
 
 protected:
     Tasktheme tasktheme;
-
+    Profession mProfession;
+        
+ 
 public:
     // Конструктор класса
-    Player(std::string PlayerName, std::string PlayerProfession, int PlayerAge) : name(PlayerName), profession(PlayerProfession), age(PlayerAge) {}
+    Player(std::string PlayerName, Profession profession, int PlayerAge) : name(PlayerName), mProfession(profession), age(PlayerAge) {}
 
     // Метод для установки значения имени
     void setName(std::string PlayerName);
@@ -29,8 +32,6 @@ public:
     // Метод для получения значения возраста
     int getAge() const;
 
-    void setProfession(std::string PlayerProfession);
-
     // Метод для получения значения имени
     std::string getProfession() const;
 
@@ -41,5 +42,10 @@ public:
     Tasktheme getTaskTheme() const
     {
         return tasktheme;
+    }
+
+    virtual bool canAnswerOnQuistion(Tasktheme theme)
+    {
+        return false;
     }
 };

@@ -8,17 +8,16 @@
 #include "Team.h"
 
 int main() {
-    Artist artist ("Jane Smith", "artist", 25);
-    artist.printInfo();
+    std::shared_ptr<Artist> artist(new Artist("Jane Smith", Profession::ArtistPro, 25));
+    artist->printInfo();
 
-    Scientist scientist("John Brown", "scientist", 30);
-    scientist.printInfo();
+    std::shared_ptr<Scientist> scientist(new Scientist("John Brown", Profession::SientistPro, 30));
+    scientist->printInfo();
 
-    Sportsman sportsman("John Smith", "sportsman", 21);
-    sportsman.printInfo();
+    std::shared_ptr<Sportsman> sportsman(new Sportsman("John Smith",Profession::SportsmanPro, 21));
+    sportsman->printInfo();
 
     Quiz quiz;
-
     Team team1("of artists");
     Team team2("of scientists");
     Team team3("of sportsmans");
@@ -31,14 +30,10 @@ int main() {
 	quiz.addTeam(team2);
 	quiz.addTeam(team3);
 
-
     quiz.addTask({ Tasktheme::Art });
     quiz.addTask({ Tasktheme::Science });
     quiz.addTask({ Tasktheme::Sport });
 
-
-
-   
 	quiz.play();
 
     return 0;

@@ -4,7 +4,7 @@ Team::Team(std::string name) : name(name) {
 
 }
 
-void Team::addPlayer(Player& player) {
+void Team::addPlayer(std::shared_ptr<Player> player) {
 	players.push_back(player);
 }
 
@@ -17,11 +17,19 @@ void Team::addNumberOfPoints(int numberOfPoints)
 	this->numberOfPoints += numberOfPoints;
 }
 
-bool Team::hasSpecialistByTaskTheme(Tasktheme theme)
+void Team::tryAnswer(Tasktheme theme)
+{
+	if (canAnswerOnQuistion(theme))
+	{
+		addNumberOfPoints(1);
+	}
+}
+
+bool Team::canAnswerOnQuistion(Tasktheme theme)
 {
 	for (int i = 0; i < players.size(); ++i)
 	{
-		if (players[i].getTaskTheme() == theme)
+		if (players[i]->canAnswerOnQuistion(theme))
 			return true;
 	}
 
